@@ -32,7 +32,7 @@ def index(request: Request):
         return Response(
             status_code=404,
             headers={},
-            description="Group not found",
+            description=f"Your account is not in any group. If this is a mistake, please contact Ren. Your user: {user}",
         )
 
     return template.render_template(
