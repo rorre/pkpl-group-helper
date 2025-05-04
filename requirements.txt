@@ -2,3 +2,5 @@ robyn
 requests
 xmltodict
 itsdangerous
+python-dotenv
+jinja2

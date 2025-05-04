@@ -10,7 +10,9 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./data.db:/workspace/data.db
+      - type: bind
+        source: ./data.db
+        target: /workspace/data.db
     environment:
       - DB_PATH=/workspace/data.db
 
