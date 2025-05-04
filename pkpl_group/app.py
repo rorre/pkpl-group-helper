@@ -19,7 +19,7 @@ template = JinjaTemplate(os.path.join(current_file_path, "templates"))
 REDIRECT_HTML = """
 <!DOCTYPE html>
 <html>
-<head><meta http-equiv="refresh" content="0; url='REDIRECT_URL'"></head>
+<head><meta http-equiv="refresh" content="0; url='/'"></head>
 <body></body>
 </html>
 """
