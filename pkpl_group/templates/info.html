@@ -1,0 +1,102 @@
+<div class="bg-base-200 p-4 flex flex-col gap-2">
+  {% if not is_complete and not should_hide %}
+  <div role="alert" class="alert alert-error">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 shrink-0 stroke-current"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    <span
+      >Your group has not fully filled all the information. Please fill in all
+      information by February 9.</span
+    >
+  </div>
+  {% endif %} {% if not is_complete and should_hide %}
+  <div role="alert" class="alert alert-error">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 shrink-0 stroke-current"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    <span>This group has not fully filled all the information.</span>
+  </div>
+  {% endif %} {% if not should_hide %}
+  <p class="text-lg"><strong>Your Group:</strong> {{group.id}}</p>
+  <p class="text-lg mt-2">
+    <strong>Pentester Group:</strong> {{group.pentester_group}}
+  </p>
+  {% else %}
+  <p class="text-lg"><strong>Group to pentest:</strong> {{group.id}}</p>
+  {% endif %}
+
+  <strong class="text-lg mt-2">Links</strong>
+  <p>
+    This is the scope of the pentesting.
+    <strong
+      >You should not pentest if the link is outside the list below.</strong
+    >
+    The only exception for this rule is if you have confirmed to the service
+    group that it is their infrastructure.
+  </p>
+
+  {% if group.links|length == 0 %}
+  <p>No links provided.</p>
+  {% else %}
+  <ul class="list-disc list-inside">
+    {% for link in group.links %}
+    <li><a href="{{ link }}">{{ link }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <strong class="text-lg mt-2">Credentials</strong>
+  <p>
+    Credentials for the app. This should exclude regular user. You are required
+    to go through normal registration form for regular user.
+  </p>
+  <div class="flex flex-col gap-2">
+    {% for creds in group.credentials %}
+    <div class="bg-base-300 flex flex-col gap-4 p-4">
+      <div class="flex flex-row gap-2 basis-1/4">
+        <strong>Username:</strong>
+        <p>{{ creds.username }}</p>
+
+        <p>|</p>
+
+        <strong>Password:</strong>
+        <p>{{ creds.password }}</p>
+      </div>
+
+      <div class="flex flex-col gap-2 w-full">
+        <strong>Comments</strong>
+        <textarea class="textarea w-full" readonly disabled>
+{{ creds.notes }}</textarea
+        >
+      </div>
+    </div>
+    {% endfor %} {% if group.credentials|length == 0 %}
+    <p>No credentials provided.</p>
+    {% endif %}
+  </div>
+
+  <strong class="text-lg mt-2">Additional Information</strong>
+  <textarea class="textarea w-full" readonly disabled>
+{{ group.additional or "No information provided" }}</textarea
+  >
+</div>

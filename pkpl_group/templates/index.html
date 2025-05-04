@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&amp;family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>PKPL Group Helper</title>
+    <style>
+      .font-assistant {
+        font-family: "Assistant", sans-serif;
+      }
+
+      .font-montserrat {
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .font-source-sans {
+        font-family: "Source Sans Pro", sans-serif;
+      }
+    </style>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  </head>
+
+  <body
+    class="container mx-auto min-h-screen flex flex-col gap-8 py-16 font-assistant"
+  >
+    {% for alert in alerts %}
+    <div role="alert" class="alert alert-error">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ alert }}</span>
+    </div>
+    {% endfor %}
+
+    <div class="flex flex-col w-full">
+      <div class="bg-base-300 p-4 font-bold font-montserrat text-lg">
+        Pentest Information
+      </div>
+      <div hx-get="/pentest" hx-trigger="load"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="flex flex-col w-full">
+      <div class="bg-base-300 p-4 font-bold font-montserrat text-lg">
+        Your Group Information
+      </div>
+      <div hx-get="/me" hx-trigger="load"></div>
+    </div>
+
+    <form
+      class="flex flex-col w-full"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <div class="bg-base-300 p-4 font-bold font-montserrat text-lg">
+        Update Information
+      </div>
+      <div class="bg-base-200 p-4 flex flex-col gap-2">
+        <strong class="text-lg">Links</strong>
+        <p>
+          URL to your app's public access. You could add multiple of them, if
+          you have multiple apps running in public. (For example, your app's
+          backend and frontend URL). Link must follow
+          <code>https://*.pkpl.cs.ui.ac.id/</code> format.
+        </p>
+
+        <div class="flex flex-col gap-2" id="link-form"></div>
+        <button class="btn btn-primary" id="additional-link-btn">
+          Add Additional Link
+        </button>
+
+        <strong class="text-lg mt-2">Credentials</strong>
+        <p>
+          If your app has a role that can not be registered publicly, then
+          please fill it below.
+          <strong>Do not put in admin credentials.</strong>
+        </p>
+        <p>
+          For example, a transportation app with "Driver" role, but all users in
+          that role can only be registered by the admin, then you must put a
+          credential for said "Driver" role here.
+        </p>
+        <div class="flex flex-col gap-2" id="credentials-form"></div>
+        <button class="btn btn-primary" id="additional-btn">
+          Add Additional Credentials
+        </button>
+
+        <strong class="text-lg mt-2">Additional Information</strong>
+        <p>Any additional information the pentester group should know.</p>
+        <textarea class="textarea w-full" name="additional"></textarea>
+
+        <!-- Ehh? where's the token?! Could it be... it's vulnerable?! -->
+        <button class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+
+    <script>
+      const credsForm = document.getElementById("credentials-form");
+      const linkForm = document.getElementById("link-form");
+      HTML_CREDS_TEMPLATE = `<div class="bg-base-300 flex flex-col gap-4 p-4">
+            <div class="flex flex-row gap-2 items-center">
+              <strong>Username:</strong>
+              <input class="input" name="username-{}" />
+            </div>
+
+            <div class="flex flex-row gap-2 items-center">
+              <strong>Password:</strong>
+              <input class="input" name="password-{}" />
+            </div>
+
+            <div class="flex flex-col gap-2 w-full">
+              <strong>Comments</strong>
+              <textarea class="textarea w-full" name="notes-{}"></textarea>
+            </div>
+          </div>`;
+
+      document.getElementById("additional-btn").onclick = function (e) {
+        e.preventDefault();
+        const r = (Math.random() + 1).toString(36).substring(7);
+        credsForm.insertAdjacentHTML(
+          "beforeend",
+          HTML_CREDS_TEMPLATE.replaceAll("{}", r)
+        );
+      };
+
+      document.getElementById("additional-link-btn").onclick = function (e) {
+        e.preventDefault();
+        const r = (Math.random() + 1).toString(36).substring(7);
+        linkForm.insertAdjacentHTML(
+          "beforeend",
+          `<input class="input" type="url" name="link-${r}" />`
+        );
+      };
+    </script>
+
+    <a
+      href="https://github.com/rorre/pkpl-group-helper"
+      class="link text-center"
+      >GitHub</a
+    >
+  </body>
+</html>
