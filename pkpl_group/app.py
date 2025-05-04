@@ -19,7 +19,7 @@ template = JinjaTemplate(os.path.join(current_file_path, "templates"))
 REDIRECT_HTML = """
 <!DOCTYPE html>
 <html>
-<head><meta http-equiv="refresh" content="0; url='/'"></head>
+<head><meta http-equiv="refresh" content="0; url='REDIRECT_URL'"></head>
 <body></body>
 </html>
 """
@@ -168,9 +168,9 @@ def post_index(request: Request):
         alert(user, "Invalid input.")
 
     return Response(
-        status_code=200,
-        headers={"Content-Type": "text/html"},
-        description=REDIRECT_HTML,
+        status_code=302,
+        headers={"Location": "/"},
+        description="",
     )
 
 
@@ -209,10 +209,9 @@ def auth(request: Request):
 
     response = Response(
         status_code=302,
-        headers={
-            "Location": os.getenv("REDIRECT_URL", "/"),
-        },
-        description="",
+        response_type="html",
+        headers={},
+        description=REDIRECT_HTML,
     )
     response = login_session(attributes["npm"], response)
     return response
