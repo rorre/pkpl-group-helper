@@ -16,6 +16,14 @@ SERVICE_URL = os.getenv("SERVICE_URL", "http://127.0.0.1:8080/auth")
 current_file_path = pathlib.Path(__file__).parent.resolve()
 template = JinjaTemplate(os.path.join(current_file_path, "templates"))
 
+REDIRECT_HTML = """
+<!DOCTYPE html>
+<html>
+<head><meta http-equiv="refresh" content="0; url='/'"></head>
+<body></body>
+</html>
+"""
+
 
 @app.get("/")
 def index(request: Request):
@@ -160,9 +168,9 @@ def post_index(request: Request):
         alert(user, "Invalid input.")
 
     return Response(
-        status_code=302,
-        headers={"Location": "/"},
-        description="",
+        status_code=200,
+        headers={"Content-Type": "text/html"},
+        description=REDIRECT_HTML,
     )
 
 
