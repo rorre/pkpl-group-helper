@@ -209,8 +209,7 @@ def auth(request: Request):
 
     response = Response(
         status_code=200,
-        response_type="html",
-        headers={},
+        headers={"Content-Type": "text/html"},
         description=REDIRECT_HTML,
     )
     response = login_session(attributes["npm"], response)
