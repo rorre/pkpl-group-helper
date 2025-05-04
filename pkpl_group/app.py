@@ -208,7 +208,7 @@ def auth(request: Request):
     attributes = user["attributes"]
 
     response = Response(
-        status_code=302,
+        status_code=200,
         response_type="html",
         headers={},
         description=REDIRECT_HTML,
