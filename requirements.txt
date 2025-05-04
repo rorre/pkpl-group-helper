@@ -1,1 +1,4 @@
 robyn
+requests
+xmltodict
+itsdangerous
